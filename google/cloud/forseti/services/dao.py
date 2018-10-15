@@ -948,7 +948,7 @@ def define_model(model_name, dbengine, model_seed):
         @classmethod
         def query_access_by_resource(cls, session, resource_type_name,
                                      permission_names, expand_groups=False,
-                                     expand_resource_hierarchy=True):
+                                     no_inherited_access=False):
             """Query access by resource
 
             Return members who have access to the given resource.
@@ -965,8 +965,8 @@ def define_model(model_name, dbengine, model_seed):
                 permission_names (list): list of strs, names of the permissions
                     to query
                 expand_groups (bool): whether to expand groups
-                expand_resource_hierarchy (bool): whether to expand resource
-                    hierarchy
+                no_inherited_access (bool): whether to filter out inherited
+                    access from resource ancestors
 
             Returns:
                 dict: role_member_mapping, <"role_name", "member_names">
@@ -977,7 +977,7 @@ def define_model(model_name, dbengine, model_seed):
 
             resources = cls.find_resource_path(session, resource_type_name)
 
-            if not expand_resource_hierarchy and resources:
+            if no_inherited_access and resources:
                 resources = resources[:1]
 
             res = (session.query(Binding, Member)
