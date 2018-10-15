@@ -588,48 +588,48 @@ class DaoTest(ForsetiTestCase):
     _ = ModelCreator(test_models.DENORMALIZATION_TESTING_1, client)
 
     checks = [
-        ('r/res1', ['a'], False, True, [u'group/g1',
-                                        u'user/u1']),
-
-        ('r/res2', ['a'], False, True, [u'group/g1',
-                                        u'user/u1',
-                                        u'user/u2']),
-
-        ('r/res3', ['a'], False, True, [u'group/g1',
-                                        u'user/u1',
-                                        u'user/u2',
-                                        u'group/g2']),
-
-        ('r/res3', ['a'], True,  True, [u'group/g1',
-                                        u'user/u1',
-                                        u'user/u2',
-                                        u'group/g2',
-                                        u'user/g2u1',
-                                        u'group/g2g1',
-                                        u'user/g2g1u1']),
-        # Checks for disabled resource_expansion
         ('r/res1', ['a'], False, False, [u'group/g1',
                                          u'user/u1']),
 
-        ('r/res2', ['a'], False, False, [u'user/u2']),
+        ('r/res2', ['a'], False, False, [u'group/g1',
+                                         u'user/u1',
+                                         u'user/u2']),
 
-        ('r/res3', ['a'], False, False, [u'user/u1',
+        ('r/res3', ['a'], False, False, [u'group/g1',
+                                         u'user/u1',
+                                         u'user/u2',
                                          u'group/g2']),
 
-        ('r/res3', ['a'], True,  False, [u'user/u1',
+        ('r/res3', ['a'], True,  False, [u'group/g1',
+                                         u'user/u1',
+                                         u'user/u2',
                                          u'group/g2',
                                          u'user/g2u1',
                                          u'group/g2g1',
                                          u'user/g2g1u1']),
+        # Checks for no_inherited_access
+        ('r/res1', ['a'], False, True, [u'group/g1',
+                                        u'user/u1']),
+
+        ('r/res2', ['a'], False, True, [u'user/u2']),
+
+        ('r/res3', ['a'], False, True, [u'user/u1',
+                                        u'group/g2']),
+
+        ('r/res3', ['a'], True,  True, [u'user/u1',
+                                        u'group/g2',
+                                        u'user/g2u1',
+                                        u'group/g2g1',
+                                        u'user/g2g1u1']),
     ]
 
-    for resource, permissions, expansion, resource_expansion, members in checks:
+    for resource, permissions, expansion, no_inherited_access, members in checks:
       res = data_access.query_access_by_resource(
           session,
           resource,
           permission_names=permissions,
           expand_groups=expansion,
-          expand_resource_hierarchy=resource_expansion)
+          no_inherited_access=no_inherited_access)
       self.assertEqual(set(members), set(res[permissions[0]]))
 
   def test_query_permissions_by_roles(self):
