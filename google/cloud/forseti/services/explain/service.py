@@ -337,7 +337,8 @@ class GrpcExplainer(explain_pb2_grpc.ExplainServicer):
             model_name,
             request.resource_name,
             request.permission_names,
-            request.expand_groups)
+            request.expand_groups,
+            request.no_inherited_access)
         accesses = []
         for role, members in mapping.iteritems():
             access = explain_pb2.GetAccessByResourcesReply.Access(

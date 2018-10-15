@@ -612,13 +612,16 @@ class ExplainClient(ForsetiClient):
 
     @require_model
     def query_access_by_resources(self, resource_name, permission_names,
-                                  expand_groups=False):
+                                  expand_groups=False,
+                                  no_inherited_access=False):
         """List members who have access to a given resource.
 
         Args:
             resource_name (str): the resource to query who have access to
             permission_names (list): the permissions to constrain the query
             expand_groups (bool): whether to expand group relations
+            no_inherited_access (bool): whether to filter out iherited
+                                             access from ancestors
 
         Returns:
             proto: the returned proto message of query_access_by_resources
@@ -627,7 +630,8 @@ class ExplainClient(ForsetiClient):
         request = explain_pb2.GetAccessByResourcesRequest(
             resource_name=resource_name,
             permission_names=permission_names,
-            expand_groups=expand_groups)
+            expand_groups=expand_groups,
+            no_inherited_access=no_inherited_access)
         return self.stub.GetAccessByResources(
             request, metadata=self.metadata())
 

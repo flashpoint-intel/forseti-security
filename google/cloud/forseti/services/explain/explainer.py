@@ -187,7 +187,8 @@ class Explainer(object):
             return result
 
     def get_access_by_resources(self, model_name, resource_name,
-                                permission_names, expand_groups):
+                                permission_names, expand_groups,
+                                no_inherited_access):
         """Returns members who have access to the given resource.
 
         Args:
@@ -195,6 +196,8 @@ class Explainer(object):
             resource_name (str): Resource name to query for.
             permission_names (list): Permission names to query for.
             expand_groups (bool): Whether to expand groups in policies.
+            no_inherited_access (bool): Whether to filter out
+                inherited access from resource ancestors.
 
         Returns:
             dict: role_member_mapping, <"role_name", "member_names">
@@ -202,16 +205,18 @@ class Explainer(object):
 
         LOGGER.debug('Retrieving members that have access to the resource,'
                      ' model_name = %s, resource_name = %s,'
-                     ' permission_names = %s, expand_groups = %s',
+                     ' permission_names = %s, expand_groups = %s,'
+                     ' no_inherited_access = %s',
                      model_name, resource_name,
-                     permission_names, expand_groups)
+                     permission_names, expand_groups, no_inherited_access)
         model_manager = self.config.model_manager
         scoped_session, data_access = model_manager.get(model_name)
         with scoped_session as session:
             mapping = data_access.query_access_by_resource(session,
                                                            resource_name,
                                                            permission_names,
-                                                           expand_groups)
+                                                           expand_groups,
+                                                           no_inherited_access)
             return mapping
 
     def get_access_by_permissions(self, model_name, role_name, permission_name,
