@@ -290,6 +290,19 @@ class ExplainerTest(ForsetiTestCase):
                 'user/f project/project2 role/b',
                 'user/f project/project2 role/a'
                 ]))
+
+            response = client.explain.query_access_by_resources(
+                resource_name='project/project2',
+                permission_names=['permission/a', 'permission/c'],
+                expand_groups=True, no_inherited_access=True)
+            access_details = expand_message(response.accesses, "access_by_resource")
+            self.assertEqual(access_details,set([
+                'group/b project/project2 role/a',
+                'user/a project/project2 role/a',
+                'user/d project/project2 role/a',
+                'group/c project/project2 role/a',
+                'user/f project/project2 role/a'
+                ]))
         self.setup.run(test)
 
     def test_query_access_by_members(self):
