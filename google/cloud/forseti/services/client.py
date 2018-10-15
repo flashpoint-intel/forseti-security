@@ -620,8 +620,8 @@ class ExplainClient(ForsetiClient):
             resource_name (str): the resource to query who have access to
             permission_names (list): the permissions to constrain the query
             expand_groups (bool): whether to expand group relations
-            no_inherited_access (bool): whether to filter out iherited
-                                             access from ancestors
+            no_inherited_access (bool): whether to filter out inherited
+                                             access from resource ancestors
 
         Returns:
             proto: the returned proto message of query_access_by_resources

@@ -955,7 +955,8 @@ def define_model(model_name, dbengine, model_seed):
             The resource hierarchy will be expanded by default, so even if the
             current resource does not have that binding, if its ancestors
             have the binding, the access will be shown.
-            Disabling the resource hierarchy expansion will only show
+            Disabling the resource hierarchy expansion, with the
+            no_inherited_access parameter will only show
             access if the resource specified has the binding.
             By default, the group relationship will not be expanded.
 
