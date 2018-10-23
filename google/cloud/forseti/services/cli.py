@@ -505,6 +505,10 @@ def define_explainer_parser(parent):
         '--expand_groups',
         action='store_true',
         help='Expand groups to their members')
+    query_access_by_resource.add_argument(
+        '--no_inherited_access',
+        action='store_true',
+        help='Filter out inherited access from resource ancestors')
 
 
 def read_env(var_key, default):
@@ -931,7 +935,8 @@ def run_explainer(client, config, output, _):
         """Query access by resource and permissions"""
         result = client.query_access_by_resources(config.resource,
                                                   config.permissions,
-                                                  config.expand_groups)
+                                                  config.expand_groups,
+                                                  config.no_inherited_access)
         output.write(result)
 
     def do_query_access_by_authz():

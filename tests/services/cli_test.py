@@ -288,7 +288,14 @@ class ImporterTest(ForsetiTestCase):
 
         ('explainer access_by_resource resource/foo --expand_groups',
          CLIENT.explain.query_access_by_resources,
-         ['resource/foo', [], True],
+         ['resource/foo', [], True, False],
+         {},
+         '{}',
+         {}),
+
+        ('explainer access_by_resource resource/foo --no_inherited_access',
+         CLIENT.explain.query_access_by_resources,
+         ['resource/foo', [], False, True],
          {},
          '{}',
          {}),

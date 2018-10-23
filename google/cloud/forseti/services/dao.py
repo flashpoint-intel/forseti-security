@@ -947,14 +947,18 @@ def define_model(model_name, dbengine, model_seed):
 
         @classmethod
         def query_access_by_resource(cls, session, resource_type_name,
-                                     permission_names, expand_groups=False):
+                                     permission_names, expand_groups=False,
+                                     no_inherited_access=False):
             """Query access by resource
 
             Return members who have access to the given resource.
-            The resource hierarchy will always be expanded, so even if the
+            The resource hierarchy will be expanded by default, so even if the
             current resource does not have that binding, if its ancestors
-            have the binding, the access will be shown
-            By default, the group relationship will not be expanded
+            have the binding, the access will be shown.
+            Disabling the resource hierarchy expansion, with the
+            no_inherited_access parameter will only show
+            access if the resource specified has the binding.
+            By default, the group relationship will not be expanded.
 
             Args:
                 session (object): db session
@@ -962,6 +966,8 @@ def define_model(model_name, dbengine, model_seed):
                 permission_names (list): list of strs, names of the permissions
                     to query
                 expand_groups (bool): whether to expand groups
+                no_inherited_access (bool): whether to filter out inherited
+                    access from resource ancestors
 
             Returns:
                 dict: role_member_mapping, <"role_name", "member_names">
@@ -969,7 +975,11 @@ def define_model(model_name, dbengine, model_seed):
 
             roles = cls.get_roles_by_permission_names(
                 session, permission_names)
+
             resources = cls.find_resource_path(session, resource_type_name)
+
+            if no_inherited_access and resources:
+                resources = resources[:1]
 
             res = (session.query(Binding, Member)
                    .filter(
